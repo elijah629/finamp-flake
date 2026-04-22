@@ -43,8 +43,8 @@ jobs:
         if: steps.cadence.outputs.run_update == 'true'
         uses: peter-evans/create-pull-request@v8
         with:
-          commit-message: "chore: update Finamp redesign pin"
-          title: "chore: update Finamp redesign pin"
+          commit-message: "chore: update flake"
+          title: "chore: update flake"
           body: |
             Automated update for:
             - `flake.lock`
