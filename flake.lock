@@ -1,0 +1,45 @@
+{
+  "nodes": {
+    "finamp-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1776482556,
+        "narHash": "sha256-0RfGBUImzqtSBnMu2qWVbvLx5CfS3SotWiUgY3hHz3U=",
+        "owner": "UnicornsOnLSD",
+        "repo": "finamp",
+        "rev": "4de48a550217801f978cbce674c8f3d097b06b84",
+        "type": "github"
+      },
+      "original": {
+        "owner": "UnicornsOnLSD",
+        "ref": "redesign",
+        "repo": "finamp",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1776548001,
+        "narHash": "sha256-ZSK0NL4a1BwVbbTBoSnWgbJy9HeZFXLYQizjb2DPF24=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "b12141ef619e0a9c1c84dc8c684040326f27cdcc",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "finamp-src": "finamp-src",
+        "nixpkgs": "nixpkgs"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
