@@ -20,13 +20,27 @@ jobs:
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Skip off-weeks
+        id: cadence
+        run: |
+          week="$(date -u +%V)"
+          if [ $((10#$week % 2)) -ne 0 ]; then
+            echo "run_update=false" >> "$GITHUB_OUTPUT"
+            echo "Skipping ISO week $week"
+          else
+            echo "run_update=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Refresh upstream lock and dependency metadata
+        if: steps.cadence.outputs.run_update == 'true'
         run: ./update.sh
 
       - name: Verify package still builds
+        if: steps.cadence.outputs.run_update == 'true'
         run: nix build .#finamp
 
       - name: Create pull request
+        if: steps.cadence.outputs.run_update == 'true'
         uses: peter-evans/create-pull-request@v8
         with:
           commit-message: "chore: update Finamp redesign pin"
