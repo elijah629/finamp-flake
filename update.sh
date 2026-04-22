@@ -6,7 +6,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 cd "$ROOT"
 
-nix flake update finamp-src
+nix flake update
 
 rev="$(jq -r '.nodes["finamp-src"].locked.rev' flake.lock)"
 fetch_git_hashes_script="$(
