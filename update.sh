@@ -1,5 +1,5 @@
 #!/usr/bin/env nix-shell
-#!nix-shell -i bash -p curl jq yq-go nix python3 nix-prefetch-git
+#!nix-shell -i bash -p curl jq yq-go nix python3 nix-prefetch-git --pure
 
 set -euo pipefail
 
