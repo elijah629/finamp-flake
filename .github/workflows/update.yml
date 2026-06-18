@@ -19,6 +19,8 @@ jobs:
       - uses: cachix/install-nix-action@v31
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
+          extra_nix_config: |
+            experimental-features = nix-command flakes
 
       - name: Skip off-weeks
         id: cadence
@@ -33,7 +35,7 @@ jobs:
 
       - name: Refresh upstream lock and dependency metadata
         if: steps.cadence.outputs.run_update == 'true'
-        run: ./update.sh
+        run: nix run .#update-finamp
 
       - name: Verify package still builds
         if: steps.cadence.outputs.run_update == 'true'
