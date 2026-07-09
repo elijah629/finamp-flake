@@ -1,9 +1,9 @@
-name: Update Finamp
+name: Update
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "27 8 * * 1"
+    - cron: "0 0 * * *"
 
 permissions:
   contents: write
@@ -14,37 +14,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v8
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: cachix/install-nix-action@v31
         with:
-          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+          nix_path: nixpkgs=channel:nixos-unstable
           extra_nix_config: |
             experimental-features = nix-command flakes
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
 
-      - name: Skip off-weeks
-        id: cadence
-        run: |
-          week="$(date -u +%V)"
-          if [ $((10#$week % 2)) -ne 0 ]; then
-            echo "run_update=false" >> "$GITHUB_OUTPUT"
-            echo "Skipping ISO week $week"
-          else
-            echo "run_update=true" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Refresh upstream lock and dependency metadata
-        if: steps.cadence.outputs.run_update == 'true'
+      - name: Update
         run: nix run .#update-finamp
 
-      - name: Verify package still builds
-        if: steps.cadence.outputs.run_update == 'true'
+      - name: Build
         run: nix build .#finamp
 
-      - name: Create pull request
-        if: steps.cadence.outputs.run_update == 'true'
+      - name: Create PR
         uses: peter-evans/create-pull-request@v8
+        id: pr
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "chore: update flake"
           title: "chore: update flake"
           body: |
@@ -54,3 +45,9 @@ jobs:
             - `git-hashes.json`
           branch: automation/update-finamp
           delete-branch: true
+
+      - name: Merge PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr merge ${{ steps.pr.outputs.pull-request-number }} --auto --squash --delete-branch
