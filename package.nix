@@ -1,7 +1,7 @@
 {
   lib,
   stdenv,
-  flutter341,
+  flutter344,
   mpv-unwrapped,
   patchelf,
   copyDesktopItems,
@@ -21,7 +21,7 @@ let
     else
       builtins.elemAt versionMatch 0;
 in
-flutter341.buildFlutterApplication {
+flutter344.buildFlutterApplication {
   pname = "finamp";
   inherit version src;
 
