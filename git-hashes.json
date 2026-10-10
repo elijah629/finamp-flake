@@ -1,6 +1,9 @@
 {
+  "audio_service": "sha256-0poZge4bBe2ypMDbsYyz6ZDI/1ZcgBnNhXsVh5PDXjg=",
+  "audio_service_platform_interface": "sha256-0poZge4bBe2ypMDbsYyz6ZDI/1ZcgBnNhXsVh5PDXjg=",
   "balanced_text": "sha256-16gcJSpxB6G/eiGPkLveRpddVu8+4Cw0UT2U3S24svk=",
-  "flutter_carplay": "sha256-0lewLQFVx+0rW2aAxWSePz/9bhNmb/mWt4RBJ++BCuM=",
+  "flutter_carplay": "sha256-4F/JwjU8V2J1FiRo6teBSRd8mZlGfyGHV+LgaDIWsfs=",
+  "flutter_to_airplay": "sha256-U84KVUZDLos7mGI0bFSC+hLHb+d2ZhPKOOrMWlGnFXA=",
   "flutter_user_certificates_android": "sha256-HL1Qd0D3CLYJysWLX2jqWt1FJRGm/BE8EjVFPztOIPo=",
   "isar": "sha256-Wg1m/HM7UnK+aC1DOyY41Bo4HuLrEaAxCtQw12ZrnN0=",
   "isar_flutter_libs": "sha256-abfMKRRVJgrG5orGvXJbIJNTx8Fx0XTlvZZ9W+LcsP0=",
