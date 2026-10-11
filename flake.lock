@@ -3,11 +3,11 @@
     "finamp-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1791386699,
-        "narHash": "sha256-MCc4INROKtAqTMElkTGeP9GUyQv1x8DP/3/CZLiunYc=",
+        "lastModified": 1791691031,
+        "narHash": "sha256-2FHjUZvqPOFDo0+qBI5eBTzRtNrRupPNAQeCtjbmF90=",
         "owner": "UnicornsOnLSD",
         "repo": "finamp",
-        "rev": "98e0f3e8827ca9f6cb7b581f97dbdbe5e1492de8",
+        "rev": "c664fdf3b837c3ed15c0277c23a6ba3874460a23",
         "type": "github"
       },
       "original": {
@@ -19,11 +19,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1791456040,
-        "narHash": "sha256-H83yz/do+hjOO0uujHyH8RgtIQP2v7Mw+cLwcZK/xKc=",
+        "lastModified": 1791594108,
+        "narHash": "sha256-XK4KceonkwD8LuMAt/vNrz982mXJM5jeHAxMwsUXXAQ=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "e7439b6b14ad3cc35d05608ebca9bce01a25f5f8",
+        "rev": "6510408d147d8c5e6d76043e899e9251756f6a75",
         "type": "github"
       },
       "original": {
