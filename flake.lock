@@ -3,11 +3,11 @@
     "finamp-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1791691031,
-        "narHash": "sha256-2FHjUZvqPOFDo0+qBI5eBTzRtNrRupPNAQeCtjbmF90=",
+        "lastModified": 1791748193,
+        "narHash": "sha256-V0AfWI+XlNSRSgbIcx4LZS2e2hBsG0qWpaqFe7Swvgg=",
         "owner": "UnicornsOnLSD",
         "repo": "finamp",
-        "rev": "c664fdf3b837c3ed15c0277c23a6ba3874460a23",
+        "rev": "673b568afc3addff56ca4e2bba65dba5a7426c5b",
         "type": "github"
       },
       "original": {
