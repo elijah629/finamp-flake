@@ -1,53 +1,51 @@
-name: Update
+name: Update flake
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * *"
+    # UTC; stagger updates away from the start of the hour.
+    - cron: "23 8 * * 2,5"
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
+
+concurrency:
+  group: update-flake
+  cancel-in-progress: false
 
 jobs:
   update:
     runs-on: ubuntu-latest
-
+    timeout-minutes: 120
+    permissions:
+      contents: write
+    env:
+      DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
     steps:
       - uses: actions/checkout@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.event.repository.default_branch }}
 
       - uses: cachix/install-nix-action@v31
         with:
-          nix_path: nixpkgs=channel:nixos-unstable
-          extra_nix_config: |
-            experimental-features = nix-command flakes
-            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Update
+      - name: Update inputs
         run: nix run .#update-finamp
 
-      - name: Build
-        run: nix build .#finamp --print-build-logs
-
-      - name: Create PR
-        uses: peter-evans/create-pull-request@v8
-        id: pr
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore: update flake"
-          title: "chore: update flake"
-          body: |
-            Automated update for:
-            - `flake.lock`
-            - `pubspec.lock.json`
-            - `git-hashes.json`
-          branch: automation/update-finamp
-          delete-branch: true
-
-      - name: Merge PR
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Validate and build before publishing
         run: |
-          gh pr merge ${{ steps.pr.outputs.pull-request-number }} --auto --squash --delete-branch
+          nix flake check --print-build-logs
+          nix build .#default --no-link --print-build-logs
+
+      - name: Commit tested updates
+        run: |
+          git add -- flake.lock pubspec.lock.json git-hashes.json
+          if git diff --cached --quiet; then
+            echo "All inputs are already up to date."
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m "chore: update flake inputs"
+          git push origin "HEAD:$DEFAULT_BRANCH"

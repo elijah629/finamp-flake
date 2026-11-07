@@ -64,12 +64,17 @@ Refresh everything:
 This repo also includes:
 
 - CI build workflow for pushes and pull requests
-- scheduled GitHub Action that refreshes the upstream `redesign` pin and opens a PR
+- scheduled GitHub Action that refreshes the upstream `redesign` pin and dependency
+  hashes every Tuesday and Friday at 08:23 UTC
+- updates are committed to the default branch only after `nix flake check` and
+  `nix build .#default` succeed; unchanged inputs produce no commit
 
 ## GitHub Repo Settings
 
-For the auto-update workflow to open PRs, enable:
+The update workflow uses the built-in `GITHUB_TOKEN` with `contents: write`.
+The default branch must allow GitHub Actions to push commits. No PAT or
+auto-merge setting is needed. Use **Actions → Update flake → Run workflow**
+to trigger an update manually.
 
-- Settings → Actions → General → Workflow permissions
-- select `Read and write permissions`
-- allow GitHub Actions to create pull requests
+This updates this package repository. A consuming system flake keeps its own
+lockfile and must update its `finamp-flake` input to adopt a new revision.

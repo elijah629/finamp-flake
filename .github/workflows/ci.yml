@@ -3,22 +3,22 @@ name: CI
 on:
   pull_request:
   push:
-    branches:
-      - main
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    timeout-minutes: 120
     steps:
-      - uses: actions/checkout@v5
-
+      - uses: actions/checkout@v6
       - uses: cachix/install-nix-action@v31
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Show flake outputs
-        run: nix flake show --all-systems
-
-      - name: Build package
-        run: nix build .#finamp
+      - name: Validate and build
+        run: |
+          nix flake check --print-build-logs
+          nix build .#default --no-link --print-build-logs

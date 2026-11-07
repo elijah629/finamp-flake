@@ -1,27 +1,31 @@
 {
   lib,
   stdenv,
-  flutter344,
+  flutter347,
+  gtk3,
+  libx11,
+  libxi,
+  makeWrapper,
   mpv-unwrapped,
   patchelf,
+  pkg-config,
   copyDesktopItems,
   makeDesktopItem,
   src,
 }:
 
 let
-  versionLine = lib.findFirst (
-    line: builtins.match ''version:[[:space:]]*.*'' line != null
-  ) null (lib.splitString "\n" (builtins.readFile "${src}/pubspec.yaml"));
+  versionLine = lib.findFirst (line: builtins.match "version:[[:space:]]*.*" line != null) null (
+    lib.splitString "\n" (builtins.readFile "${src}/pubspec.yaml")
+  );
   versionMatch =
-    if versionLine == null then null else builtins.match ''version:[[:space:]]*([^[:space:]]+)'' versionLine;
-  version =
-    if versionMatch == null then
-      "redesign-local"
+    if versionLine == null then
+      null
     else
-      builtins.elemAt versionMatch 0;
+      builtins.match "version:[[:space:]]*([^[:space:]]+)" versionLine;
+  version = if versionMatch == null then "redesign-local" else builtins.elemAt versionMatch 0;
 in
-flutter344.buildFlutterApplication {
+flutter347.buildFlutterApplication {
   pname = "finamp";
   inherit version src;
 
@@ -30,14 +34,36 @@ flutter344.buildFlutterApplication {
 
   postPatch = ''
     rm -rf build .dart_tool
+    # Dart 3.13 rejects final modifiers on these upstream parameters.
+    sed -i -E 's/(set(Speed|Pitch|Volume)\()final double /\1double /g' \
+      lib/services/music_player_background_task.dart
   '';
 
   nativeBuildInputs = [
     patchelf
     copyDesktopItems
+    makeWrapper
+    pkg-config
   ];
 
-  buildInputs = [ mpv-unwrapped ];
+  buildInputs = [
+    gtk3
+    libx11
+    libxi
+    mpv-unwrapped
+  ];
+
+  preBuild = ''
+    # Dart native-asset hooks strip PKG_CONFIG_PATH from their environment.
+    # Capture the setup hooks' complete path in a wrapper for cnativeapi.
+    mkdir -p "$TMPDIR/finamp-tools"
+    makeWrapper ${lib.getExe pkg-config} "$TMPDIR/finamp-tools/pkg-config" \
+      --set PKG_CONFIG_PATH "$PKG_CONFIG_PATH" \
+      --set PKG_CONFIG_PATH_${
+        lib.replaceStrings [ "-" ] [ "_" ] stdenv.hostPlatform.config
+      } "$PKG_CONFIG_PATH"
+    export PATH="$TMPDIR/finamp-tools:$PATH"
+  '';
 
   postFixup = ''
     patchelf "$out/app/$pname/finamp" \
